@@ -139,6 +139,6 @@ You can format and validate Terraform config:
 make fmt
 make validate
 
-#![alt text](image-1.png)
-#![alt text](image-1.png)
+![alt text](image-1.png)
+![alt text](image-1.png)
 
