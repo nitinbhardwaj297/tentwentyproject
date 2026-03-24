@@ -1,84 +1,79 @@
-# Hello World Web App on AWS
+Hello World Web App on AWS
+Project Overview
 
-## Project Overview
+This project demonstrates deploying a simple "Hello World" web application on AWS using Terraform and basic DevOps practices.
 
-This project demonstrates deploying a simple "Hello World" web application on **AWS** using Terraform and basic DevOps practices. The architecture includes:
+The main goal is to showcase:
 
-- **VPC** with public and private subnets  
-- **EC2 instances** running Nginx in private subnets  
-- **Application Load Balancer (ALB)** in public subnets  
-- Proper **security groups** and routing  
-- A custom HTML page showing instance details  
+Infrastructure automation using Terraform
+Cloud networking and security practices
+Deployment of a web application (Nginx) on EC2 instances
+Load balancing with Application Load Balancer (ALB)
 
-This project showcases your understanding of cloud networking, infrastructure automation, and application deployment.
+Key Components:
 
----
+VPC with public and private subnets: Provides network isolation and secure deployment.
+EC2 instances (private subnets): Hosts Nginx and serves a custom HTML page.
+Application Load Balancer (public subnets): Routes HTTP traffic to EC2 instances.
+Security groups: Ensures only allowed traffic reaches resources.
+Custom HTML page: Displays instance details (ID, AZ, and Nginx).
+How It Works
+VPC & Subnets: Terraform creates a VPC with public and private subnets.
+Public subnets host the ALB.
+Private subnets host the EC2 instances.
+Security Groups:
+ALB SG: Allows HTTP traffic (port 80) from anywhere.
+EC2 SG: Allows traffic only from ALB, no direct internet access.
+EC2 Instances:
+Launched in private subnets.
+Nginx installed and configured with a simple HTML page.
+Automatically registered with the ALB.
+Application Load Balancer:
+Routes traffic to EC2 instances.
+Performs health checks to ensure traffic only goes to healthy instances.
+Custom Page:
+Served via Nginx on port 80.
+Shows instance-specific information for easy verification.
 
-## Architecture Diagram
-  Internet
-     |
-| ALB (Public) |
-+-----------------+
-| |
-v v
-+-------------+ +-------------+
-| EC2 Private | | EC2 Private |
-| Instance 1 | | Instance 2 |
-+-------------+ +-------------+
-| |
-Private Subnets
-|
-VPC
+Prerequisites
 
+Before starting, ensure you have:
 
-- **ALB:** Routes traffic to private EC2 instances  
-- **EC2:** Hosts Nginx and custom HTML page  
-- **Security:** ALB accepts HTTP from anywhere; EC2 only accepts traffic from ALB  
+AWS account with permissions to create:
+VPCs, subnets, route tables
+Security groups
+EC2 instances
+ALB
+Terraform installed (v1.5+ recommended)
+AWS CLI configured with your access key and region
+Git installed for cloning the repository
 
----
+Project Structure
 
-## Prerequisites
-
-Before running this project, make sure you have:
-
-1. **AWS Account** with permissions to create:
-   - VPCs, subnets, route tables  
-   - Security groups  
-   - EC2 instances  
-   - Application Load Balancer  
-2. **Terraform installed** (v1.5+ recommended)  
-3. **AWS CLI configured** with your access key and region  
-
----
-
-## Project Structure
 infra/
-├── Makefile
-├── provider.tf
-├── vpc.tf
-├── ec2.tf
-├── alb.tf
-├── terraform.tfstate
+├── Makefile              # Commands to initialize, deploy, and destroy infrastructure
+├── provider.tf           # Terraform provider configuration
+├── vpc.tf                # VPC and subnet configuration
+├── ec2.tf                # EC2 instance configuration
+├── alb.tf                # ALB and listener configuration
+├── terraform.tfstate     # Terraform state file
 ├── terraform.tfstate.backup
 
+Explanation:
 
-- `Makefile` – automation commands to init, create, destroy infra  
-- `*.tf` files – Terraform configurations for network, EC2, ALB  
+.tf files define infrastructure resources.
+Makefile automates Terraform commands.
+terraform.tfstate tracks the deployed resources.
 
----
+Step 1: Clone the Repository
 
-## Setup Tutorial
-
-### Step 1: Clone the repository
-
-```bash
 git clone <your-repo-url>
 cd infra
 
 Step 2: Initialize Terraform
 
 make init
-This will initialize Terraform in the current directory.
+Initializes Terraform and downloads required providers.
 
 Step 3: Create Infrastructure
 
@@ -86,15 +81,14 @@ make infra
 
 This will:
 
-Create the VPC, subnets, route tables, security groups
-Launch EC2 instances
-Deploy Nginx and the custom HTML page
-Create ALB with HTTP listener and health checks
+Create VPC, subnets, route tables, and security groups
+Launch EC2 instances with Nginx installed
+Deploy the custom HTML page
+Create an ALB with HTTP listener and health checks
 Step 4: Verify Deployment
-Get the ALB DNS name from the AWS console or Terraform output
-Open it in a browser to see your page:
-
-Sample Page Output:
+Get the ALB DNS name from AWS console or Terraform output.
+Open the ALB URL in your browser.
+You should see the page:
 
 Hello World!
 Instance ID: i-1234567890abcdef0
@@ -105,14 +99,11 @@ Step 5: Destroy Infrastructure
 
 make destroy
 
-This will remove all AWS resources created by Terraform.
+Deletes all AWS resources created by Terraform.
 
-Security Groups
-ALB SG: HTTP (port 80) from anywhere
-EC2 SG: Only allow traffic from ALB SG; no direct internet access
-Nginx Configuration
+Nginx HTML Page
 
-Terraform provisions Nginx on EC2 instances with a simple HTML page:
+Terraform automatically provisions a custom page on EC2:
 
 <!DOCTYPE html>
 <html>
@@ -127,19 +118,14 @@ Terraform provisions Nginx on EC2 instances with a simple HTML page:
 </body>
 </html>
 
-This page is served on port 80 via Nginx.
-
-Notes / Tips
-Make sure Terraform state files (terraform.tfstate) are in the same folder as .tf files
-For multiple availability zones, modify the subnet and EC2 configuration in ec2.tf
-You can format and validate Terraform config:
-
-make fmt
-make validate
-
-<img width="1277" height="755" alt="Screenshot 2026-03-24 at 4 31 05 PM" src="https://github.com/user-attachments/assets/6618127c-45f3-40f7-b32d-5962317c6bd2" />
-
-<img width="1280" height="753" alt="Screenshot 2026-03-24 at 4 31 35 PM" src="https://github.com/user-attachments/assets/692d6552-617d-4ed9-b8b0-39a1bb5d80e0" />
-
-
-
+Security Groups
+Resource	Allowed Traffic
+ALB SG	HTTP (port 80) from anywhere
+EC2 SG	Only from ALB SG; no internet access
+Useful Commands
+Command	Description
+make init	Initializes Terraform
+make infra	Deploys all infrastructure and application
+make destroy	Deletes all resources
+make fmt	Formats Terraform code
+make validate	Validates Terraform configuration
