@@ -17,8 +17,6 @@ This project showcases your understanding of cloud networking, infrastructure au
 ## Architecture Diagram
   Internet
      |
-     v
-     +-----------------+
 | ALB (Public) |
 +-----------------+
 | |
